@@ -15,6 +15,9 @@ deps/
 ## Pattern matches substrate_l0_*@<hostname>/ directories at workspace root
 substrate_l0_*@*/
 
+## Mnesia per-node data dirs — created by mnesia:create_schema/1; never in source
+Mnesia.*@*/
+
 ## Crash dumps + core files
 erl_crash.dump
 core.*
