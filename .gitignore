@@ -1,0 +1,17 @@
+## Workspace .gitignore — substrate-L0 Erlang
+## DO NOT commit sensitive material
+
+## Erlang cookie (user-private; never in source)
+.erlang.cookie
+
+## Erlang build artifacts (future when rebar3 used at this level)
+_build/
+.rebar3/
+ebin/
+deps/
+*.beam
+
+## Editor + OS noise
+.DS_Store
+*.swp
+*~

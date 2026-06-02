@@ -1,0 +1,59 @@
+## Organ-node baseline VM args — REFERENCE TEMPLATE
+##
+## This template documents the canonical flag-set every organ-node spawn script
+## inherits in W3 + downstream workstreams. Organ-nodes preserve the EPMD-isolation
+## invariant (D8): no distributed-Erlang traffic between organ-nodes; all inter-organ
+## traffic via Spine HTTP boundary.
+##
+## DO NOT execute this template directly. It is reference content consumed by W3+
+## per-organ skeleton authoring + the harness BEAM node configuration.
+##
+## Per ea-m1-r1 §3 deliverable 2 + §4 verification 3 (empirical smoke test)
+## EPMD-isolation invariant — Vigil-asserted via R5 CV scaffolding
+## DOE 2026-06-02 / EA RFI-EA-2 ruling: substrate_l0_* sname pattern; organ-nodes use distinct namespace
+##
+## --------------------------------------------------------------------------
+## CANONICAL ORGAN-NODE FLAG-SET
+## --------------------------------------------------------------------------
+##
+## Empirical correction (DOE 2026-06-02 §4 verification step 3): the relay's
+## "-no_epmd" framing was technically imprecise. `-no_epmd` is an erlexec-level
+## flag that says "start distribution but without EPMD" and REQUIRES a paired
+## `-proto_dist <Protocol>` arg specifying an alternative distribution transport.
+## Organ-nodes that go through Spine HTTP have NO inter-organ distributed-Erlang
+## need — distribution machinery should not start at all.
+##
+## Canonical mechanism: `-kernel start_distribution false`.
+## This prevents distribution startup entirely → no EPMD registration → no
+## distributed-Erlang traffic structurally possible. Node identifies as
+## `nonode@nohost` regardless of any `-sname` provided.
+##
+## Canonical organ-node flag-set:
+
+-sname <organ_slug>                  ## short-name for ps/diagnostics; distribution OFF below
+-kernel start_distribution false      ## ENFORCE: no distribution, no EPMD registration
++K true                              ## kernel poll on (epoll/kqueue performance)
++A 32                                ## async thread pool
+
+## Cookie posture: shared substrate-L0 cookie via ~/.erlang.cookie file-level inheritance.
+## Cookie value is irrelevant under -kernel start_distribution false (no distribution attempts),
+## but consistency-with-substrate-L0 is preserved by file-level sharing — no per-organ cookie variant.
+##
+## --------------------------------------------------------------------------
+## EMPIRICAL VERIFICATION (2026-06-02 §4 step 3 — PASS)
+## --------------------------------------------------------------------------
+##
+## Spawn pattern (b) verified empirically:
+##   $ erl -sname test_canonical_organ -kernel start_distribution false \
+##         -noinput -noshell -eval 'io:format("named-no-dist pid=~p node=~p~n", [self(), node()]), halt(0).'
+##   named-no-dist pid=<0.10.0> node=nonode@nohost
+##
+##   $ epmd -names | grep test_canonical_organ
+##   (no match — invariant holds)
+##
+## Pattern (a) — anonymous (no -sname at all) — also viable for short-lived worker procs;
+## same empirical result: node identifies as nonode@nohost; no EPMD registration.
+##
+## Choice between (a) and (b): use (b) for long-lived organ-supervised procs (diagnostic
+## visibility in `ps -axo args | grep beam.smp` worth the -sname); use (a) for short-lived
+## escript-style workers spawned per-request.

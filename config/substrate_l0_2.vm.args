@@ -1,0 +1,9 @@
+## Substrate-L0 node 2 — VM args for the BEAM cluster on M4 Max
+## Generated per ea-m1-r1 §3 deliverable 1 — DOE 2026-06-02
+## Architecture anchors: D8 EPMD-isolation (substrate-L0 scope only) + D33 Phase A topology + DOE 1935 R WS1 refinement 2
+
+-sname substrate_l0_2
+-kernel inet_dist_listen_min 9102 inet_dist_listen_max 9102
+-kernel prevent_overlapping_partitions true
++K true
++A 32
