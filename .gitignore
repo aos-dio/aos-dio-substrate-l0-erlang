@@ -4,12 +4,20 @@
 ## Erlang cookie (user-private; never in source)
 .erlang.cookie
 
-## Erlang build artifacts (future when rebar3 used at this level)
+## Erlang build artifacts
 _build/
 .rebar3/
 ebin/
 deps/
 *.beam
+
+## ra runtime data — per-node persistent state, never in source control
+## Pattern matches substrate_l0_*@<hostname>/ directories at workspace root
+substrate_l0_*@*/
+
+## Crash dumps + core files
+erl_crash.dump
+core.*
 
 ## Editor + OS noise
 .DS_Store
