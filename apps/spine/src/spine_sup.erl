@@ -2,8 +2,11 @@
 %% @doc spine top-level supervisor
 %%
 %% one_for_all base supervisor per Q-class 4-tier supervision shape.
-%% At Phase A R2, only the ra-cluster-bootstrapper child is started here.
-%% R3+ will add Mnesia bridge + state-machine consumer children.
+%%
+%% Children:
+%%   - spine_pid_monitor (R4 — PID liveness monitor; registered local server)
+%%
+%% R3+ may add Mnesia bridge children.
 %%%-------------------------------------------------------------------
 -module(spine_sup).
 -behaviour(supervisor).
@@ -20,5 +23,12 @@ init([]) ->
     SupFlags = #{strategy => one_for_all,
                  intensity => 5,
                  period => 60},
-    ChildSpecs = [],   %% No supervised children at R2; ra cluster is bootstrapped via API
+    ChildSpecs = [
+        #{id => spine_pid_monitor,
+          start => {spine_pid_monitor, start_link, []},
+          restart => permanent,
+          shutdown => 5000,
+          type => worker,
+          modules => [spine_pid_monitor]}
+    ],
     {ok, {SupFlags, ChildSpecs}}.
