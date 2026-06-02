@@ -1,0 +1,10 @@
+#{id => {spine_ra_machine,'substrate_l0_1@G8-Demo--CPUR'},
+  machine => {module,spine_ra_machine,#{}},
+  cluster_name => spine_ra_cluster,uid => <<"SPINE_9L6CS8HOOF10">>,
+  initial_members =>
+      [{spine_ra_machine,'substrate_l0_1@G8-Demo--CPUR'},
+       {spine_ra_machine,'substrate_l0_2@G8-Demo--CPUR'},
+       {spine_ra_machine,'substrate_l0_3@G8-Demo--CPUR'}],
+  log_init_args => #{uid => <<"SPINE_9L6CS8HOOF10">>},
+  broadcast_time => 100,tick_timeout => 1000,
+  install_snap_rpc_timeout => 120000,await_condition_timeout => 30000}.

@@ -1,0 +1,23 @@
+{application, spine,
+ [{description, "Spine — DIO ESB orchestration plane (ra-backed persistence + state machine)"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {spine_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    ra
+   ]},
+  {env, [
+    %% ra cluster nodes — populated at boot per substrate-L0 topology
+    {ra_cluster_nodes, [
+      'substrate_l0_1@G8-Demo--CPUR',
+      'substrate_l0_2@G8-Demo--CPUR',
+      'substrate_l0_3@G8-Demo--CPUR'
+    ]},
+    {ra_cluster_name, spine_ra_cluster}
+  ]},
+  {modules, []},
+  {licenses, ["Apache-2.0"]},
+  {links, []}
+ ]}.
